@@ -21,4 +21,14 @@ btn.innerHTML = "Get weather";
 page.appendChild(btn);
 
 //FINISH (lets user input become the id in API call)
-let apiUserID = document.getElementById("userZipCode");
+let apiUserID = userInput.innerHTML;
+
+btn.addEventListener("click", function() {
+    fetch('http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=f8b14f394f5b7b14292a3d7cfc8915d2')
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+    })
+})
