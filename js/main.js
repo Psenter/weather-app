@@ -1,34 +1,37 @@
 // API key = f8b14f394f5b7b14292a3d7cfc8915d2
 
-//WORKS (HOW TO CALL API AND GET DATA)
-/*fetch('http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=f8b14f394f5b7b14292a3d7cfc8915d2')
-    .then(response => {
-        return response.json();
-    })
-    .then(data => {
-        console.log(data);
-    })
-    */
+const API_KEY = "f8b14f394f5b7b14292a3d7cfc8915d2";
+const API_URL = "http://api.openweathermap.org";
+let API_PATH = "/data/2.5/weather";
+let userZipCode = document.getElementById('userZipCodeInput').value;
 
 let page = document.getElementById("page");
 
-let userInput = document.createElement("input");
-userInput.id = "userZipCode";
-page.appendChild(userInput);
+window.addEventListener('load', renderUI());
 
-let btn = document.createElement("button");
-btn.innerHTML = "Get weather";
-page.appendChild(btn);
+function renderUI() {
+    let userInput = document.createElement('input');
+    userInput.setAttribute('placeholder', 'Enter Zipcode.');
+    userInput.setAttribute('id', 'userZipCodeInput')
+    page.appendChild(userInput);
 
-//FINISH (lets user input become the id in API call)
-let apiUserID = userInput.innerHTML;
-
-btn.addEventListener("click", function() {
-    fetch('http://api.openweathermap.org/data/2.5/forecast?id=524901&appid=f8b14f394f5b7b14292a3d7cfc8915d2')
-    .then(response => {
-        return response.json();
+    let btn = document.createElement('button');
+    btn.innerHTML = 'Get Weather';
+    page.appendChild(btn);
+    btn.addEventListener('click', function() {
+        return weatherData();
     })
-    .then(data => {
-        console.log(data);
-    })
-})
+}
+
+function weatherData() {
+    axios.get(`http://api.openweathermap.org/data/2.5/weather?zip=${userZipCode}&appid=${API_KEY}`)
+        .then(response => {
+            var data = response.data;
+            console.log(data);
+        })
+        .catch (error => {
+            console.error(error);
+            alert("There was an issue getting weather data.");
+        });
+}
+
