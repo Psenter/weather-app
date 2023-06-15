@@ -31,6 +31,10 @@ function renderUI() {
     btn.addEventListener('click', function() {
         return getweatherData();
     });
+
+    let weatherTables = document.createElement('div');
+    weatherTables.setAttribute('id', 'weatherData');
+    page.appendChild(weatherTables);
 }
 
 function getweatherData() {
@@ -42,10 +46,115 @@ function getweatherData() {
         .then(response => {
             let data = response.data;
             console.log(data);
+            let weatherInfo = createWeatherTables(data);
+            let weatherDataDiv = document.getElementById("weatherData");
+            weatherDataDiv.innerHTML = weatherInfo;
         })
         //IF an error happens, an alert is displayed saying there was an error 
         .catch (error => {
             console.error(error);
             alert("There was an issue getting weather data.\nPlease check your zipcode.");
         });
+}
+
+function createWeatherTables(data) {
+    let weatherIcon = data.weather[0].icon;
+    let iconUrl = `https://openweathermap.org/img/wn/${weatherIcon}.png`;
+    let tempK = data.main.temp;
+    let tempC = (tempK - 273.15).toFixed(1);
+    let tempF = ((tempC * 9/5) + 32).toFixed(1);
+    let weatherZipDataDisplay = 
+    `
+      <div class="container">
+        <div class="row">
+            <div class="col">
+                City
+            <div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="col">
+                ${data.name}
+            <div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+            <div class="col">
+                Temperature
+            <div>
+        </div>
+      </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    ${tempK}
+                </div>
+                <div class="col">
+                    ${tempF}
+                </div>
+                <div class="col">
+                    ${tempC}
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                Humidity
+                <div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    ${data.main.humidity}
+                <div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    Pressure
+                <div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    ${data.weather.pressure}
+                <div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    Condition
+                <div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    ${data.weather[0].description}
+                <div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                Other Info
+                <div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <img src="${iconUrl}" alt="Weather picture.">
+                <div>
+            </div>
+        </div>
+    `;
+    return weatherZipDataDisplay;
 }
