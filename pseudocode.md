@@ -52,7 +52,7 @@ GET USER INPUT
 
 # FUNCTIONAL:
 ```
-fetchData () {
+weatherData () {
     //take user input
     //gets all data needed for site (city, waether, temp, image)
     //set state
