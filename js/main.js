@@ -83,6 +83,7 @@ function createWeatherTables(data) {
 
   //gets the temp from the API
   //converts temp kelvin into celsius and fahrenheit
+  //.toFixed(1) rounds to the nearest 10th 
   let tempK = data.main.temp;
   let tempC = (tempK - 273.15).toFixed(1);
   let tempF = ((tempC * 9) / 5 + 32).toFixed(1);
