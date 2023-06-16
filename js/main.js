@@ -31,11 +31,6 @@ function renderUI() {
   btn.addEventListener("click", function () {
     return getweatherData();
   });
-
-  //creates a div with an id of 'weatherData' and puts it onto the screen
-  let weatherTables = document.createElement("div");
-  weatherTables.setAttribute("id", "weatherData");
-  page.appendChild(weatherTables);
 }
 
 function getweatherData() {
@@ -50,20 +45,20 @@ function getweatherData() {
 
     //.then statment is what to do if there is data to gather
     .then((response) => {
-      //stores the API call in var data
+      //stores the API call in the var data
       let data = response.data;
 
       //logs all the data in console
       console.log(data);
 
       //calls the below function and sets the var equal to the function
-      let weatherInfo = createWeatherTables(data);
+      let allWeatherInfo = createWeatherTables(data);
 
       //gets the created empty div from 'renderUI' function
-      let weatherDataDiv = document.getElementById("weatherData");
+      let weatherDiv = document.createElement("div");
 
       //sets the div in the 'renderUI' function equal to the weatherInfo(which is set equal to the function)
-      weatherDataDiv.innerHTML = weatherInfo;
+      weatherDiv.innerHTML = allWeatherInfo;
     })
 
     //IF an error happens, an alert is displayed saying there was an error
@@ -81,106 +76,37 @@ function createWeatherTables(data) {
   let weatherImage = data.weather.icon;
   let weatherImageUrl = `https://openweathermap.org/img/wn/${weatherImage}.png`;
 
-  //gets the temp from the API
-  //converts temp kelvin into celsius and fahrenheit
+  //gets all the info needed and stores it all in vars
   let tempK = data.main.temp;
   let tempC = (tempK - 273.15).toFixed(1);
   let tempF = ((tempC * 9) / 5 + 32).toFixed(1);
+  let cityName = data.name;
+  let cityHumidity = data.main.humidity;
+  let cityCondition = data.weather[0].description;
 
-  //this is a template literal
-  //allows me to make a multi-line string
-  //also allows me to insert temps and other data directly into the string
-  let weatherZipDataDisplay = `
-      <div class="container">
-        <div class="row">
-            <div class="col">
-                City
-            <div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-            <div class="col">
-                ${data.name}
-            <div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-            <div class="col">
-                Temperature
-            <div>
-        </div>
-      </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    ${tempK}
-                </div>
-                <div class="col">
-                    ${tempF}
-                </div>
-                <div class="col">
-                    ${tempC}
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                Humidity
-                <div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    ${data.main.humidity}
-                <div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    Pressure
-                <div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    ${data.weather.pressure}
-                <div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    Condition
-                <div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    ${data.weather[0].description}
-                <div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                Other Info
-                <div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <img src="${weatherImageUrl}" alt="Weather picture.">
-                <div>
-            </div>
-        </div>
-    `;
-  return weatherZipDataDisplay;
+  //FIX WET CODE WHEN POSSIBLE  
+  let allWeatherOfCity = document.createElement("div");
+  allWeatherOfCity.setAttribute('class', 'container');
+
+  let nameOfCity = document.createElement("div");
+  nameOfCity.classList.add("row", "border", "border-dark")
+  nameOfCity.innerHTML = cityName;
+  allWeatherOfCity.appendChild(nameOfCity);
+
+  let tempsOfCity = document.createElement("div");
+  tempsOfCity.classList.add("row", "border", "border-dark")
+  tempsOfCity.innerHTML = tempK+'°K' + ' ' + tempF+'°F'+' '+tempC+'°C';
+  allWeatherOfCity.appendChild(tempsOfCity);
+
+  let humidityOfCity = document.createElement("div");
+  humidityOfCity.classList.add("row", "border", "border-dark")
+  humidityOfCity.innerHTML = cityHumidity;
+  allWeatherOfCity.appendChild(humidityOfCity);
+
+  let conditionOfCity = document.createElement("div");
+  conditionOfCity.classList.add("row", "border", "border-dark")
+  conditionOfCity.innerHTML = cityCondition;
+  allWeatherOfCity.appendChild(conditionOfCity);
+
+  page.appendChild(allWeatherOfCity);
 }
