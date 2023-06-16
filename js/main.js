@@ -7,6 +7,7 @@ let API_PATH = "/data/2.5/weather";
 
 //pulls the div from the HTML in
 let page = document.getElementById("page");
+page.setAttribute("class", "row d-flex justify-content-center");
 
 //when the page loads it runs renderUI
 window.addEventListener("load", renderUI);
@@ -16,17 +17,28 @@ function renderUI() {
   //adds the 'Weather App' title to the page
   let h1 = document.createElement("h1");
   h1.innerHTML = "Weather App";
+  h1.setAttribute('class', 'pt-5 pb-5 text-center');
   page.appendChild(h1);
 
   //adds a user input box for the person to type their chosen zipcode into
   let userInput = document.createElement("input");
   userInput.setAttribute("placeholder", "Enter Zipcode.");
   userInput.setAttribute("id", "userZipCodeInput");
+  userInput.setAttribute("class", "col-2 text-center mb-3")
   page.appendChild(userInput);
+
+  //adds event listener to the input element where if enter is pressed it works the same as the button
+  userInput.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      return getweatherData();
+    }
+  })
+
 
   //adds a button to start the search for weather in the area the user wants
   let btn = document.createElement("button");
   btn.innerHTML = "Get Weather";
+  btn.setAttribute("class", "col-2 mb-3 bg-info")
   page.appendChild(btn);
   btn.addEventListener("click", function () {
     return getweatherData();
@@ -84,28 +96,30 @@ function createWeatherTables(data) {
   let cityHumidity = data.main.humidity;
   let cityCondition = data.weather[0].description;
 
-  //FIX WET CODE WHEN POSSIBLE  
+  //FIX WET CODE WHEN POSSIBLE
+  //how to get bootstrap entered here???
+  //possibly use am array to make it look cleaner?  
   let allWeatherOfCity = document.createElement("div");
   allWeatherOfCity.setAttribute('class', 'container');
 
   let nameOfCity = document.createElement("div");
-  nameOfCity.classList.add("row", "border", "border-dark")
-  nameOfCity.innerHTML = cityName;
+  nameOfCity.classList.add("text-center", "border", "border-dark", "mb-4")
+  nameOfCity.innerHTML = 'City: </br>' + cityName;
   allWeatherOfCity.appendChild(nameOfCity);
 
   let tempsOfCity = document.createElement("div");
-  tempsOfCity.classList.add("row", "border", "border-dark")
-  tempsOfCity.innerHTML = tempK+'°K' + ' ' + tempF+'°F'+' '+tempC+'°C';
+  tempsOfCity.classList.add("border", "border-dark", "text-center", "mb-4")
+  tempsOfCity.innerHTML = 'Temperature: </br>'+tempK+'°K' + ' ' + tempF+'°F'+' '+tempC+'°C';
   allWeatherOfCity.appendChild(tempsOfCity);
 
   let humidityOfCity = document.createElement("div");
-  humidityOfCity.classList.add("row", "border", "border-dark")
-  humidityOfCity.innerHTML = cityHumidity;
+  humidityOfCity.classList.add("text-center", "border", "border-dark", "mb-4")
+  humidityOfCity.innerHTML = "Humidity: </br>" + cityHumidity;
   allWeatherOfCity.appendChild(humidityOfCity);
 
   let conditionOfCity = document.createElement("div");
-  conditionOfCity.classList.add("row", "border", "border-dark")
-  conditionOfCity.innerHTML = cityCondition;
+  conditionOfCity.classList.add("text-center", "border", "border-dark", "mb-4")
+  conditionOfCity.innerHTML = "Condition: </br>" + cityCondition;
   allWeatherOfCity.appendChild(conditionOfCity);
 
   page.appendChild(allWeatherOfCity);
