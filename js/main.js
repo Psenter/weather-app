@@ -7,6 +7,7 @@ let API_PATH = "/data/2.5/weather";
 let page = document.getElementById("page");
 page.classList.add("container");
 
+
 page.insertAdjacentHTML("beforeend", `
     <h1 class="text-center mt-5">Weather App</h1>
     <div class="row justify-content-center mt-5">
@@ -14,6 +15,7 @@ page.insertAdjacentHTML("beforeend", `
       <div class="col-1"></div>
       <button class="col-2 text-center p-2" id="btn">Get Weather.</button>
     </div>
+    <div id="weatherInfo" class="mt-5"</div>
 `);
 
 let userZipcode = document.getElementById("userZipcode")
@@ -30,6 +32,7 @@ btn.addEventListener("click", function() {
 
 function getWeatherData() {
   const userZipcodeValue = userZipcode.value;
+  const weatherInfo = document.getElementById("weatherInfo")
 
   if (!userZipcodeValue) {
     alert("Please enter a zipcode.");
@@ -39,8 +42,35 @@ function getWeatherData() {
   axios.get(`${API_URL}${API_PATH}?zip=${userZipcodeValue}&appid=${API_KEY}`)
     .then((response) => {
       let data = response.data;
-      console.log(data);
+      console.log(data)
+      const tempC = (data.main.temp - 273.15).toFixed(1);
+      const tempF = ((tempC * 9) / 5 + 32).toFixed(1);
+
+      const weatherData = `
+      <div class="row justify-content-center">
+        <div class="border border-dark text-center col-9"><b>City</b></div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="border-bottom border-start border-end border-dark text-center col-9 p-3">${data.name}</div>
+      </div>
+      <div class="row justify-content-center mt-5">
+        <div class="border border-dark text-center col-9"><b>Temperature</b></div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-3 text-center border-dark border-start border-bottom p-3">${data.main.temp}</div>
+        <div class="col-3 text-center border-dark border-start border-bottom p-3">${tempF} F</div>
+        <div class="col-3 text-center border-dark border-start border-bottom border-end p-3">${tempC} C</div>
+      </div>
+      <div class="row justify-content-center mt-5">
+        <div class="border border-dark text-center col-9"><b>Condition</b></div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-9 text-center border-dark border-bottom border-start border-end p-4">${data.weather[data.id].description}</div>
+      </div>`;
+
+      weatherInfo.innerHTML = weatherData;
     })
+
     .catch((error) => {
       console.error(error);
       alert("There was an issue getting the weather data.\nPlease check the zipcode.")
