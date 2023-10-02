@@ -1,11 +1,13 @@
+//holds all of my API information
 const API_KEY = "f8b14f394f5b7b14292a3d7cfc8915d2";
 const API_URL = "http://api.openweathermap.org";
 let API_PATH = "/data/2.5/weather";
 
+//gets page div from the DOM and adds container class to the page
 let page = document.getElementById("page");
 page.classList.add("container");
 
-
+//sets the innerHTML of the page to what is below
 page.innerHTML = `
     <h1 class="text-center mt-5">Weather App</h1>
     <div class="row justify-content-center mt-5">
@@ -16,8 +18,10 @@ page.innerHTML = `
     <div id="weatherInfo" class="mt-5"></div>
 `;
 
+//creates var that holds the input from the user zipcode
 let userZipcode = document.getElementById("userZipcode")
 
+//when the page loads, it checks if there is anything in local storage and then loads the information
 window.addEventListener("load", function() {
   let storedZipcode = localStorage.getItem("zipcode");
   if (storedZipcode) {
@@ -26,39 +30,53 @@ window.addEventListener("load", function() {
   }
 })
 
+//adds an event listener to check if the user hits enter
+//if the user hits enter, it sends the user input to the the getWeatherData function 
 userZipcode.addEventListener("keypress", function(event) {
   if (event.key === "Enter") {
-    return console.log(getWeatherData());
+    return getWeatherData();
   }
 });
 
+//gets the button element that was added to the page
+//adds en event listener to the button that when clicked sends the user input to the getWeatherData function
 let btn = document.getElementById("btn")
 btn.addEventListener("click", function() {
   return console.log(getWeatherData());
 });
 
 function getWeatherData() {
+  //creates a var that is set to the value of userZipcode
+  //gets the weatherInfo div and creates a var that is set to hold that div
   const userZipcodeValue = userZipcode.value;
   const weatherInfo = document.getElementById("weatherInfo")
 
+  //if the zipcode that the user input is not an actual zipcode, if the input field is empty then it displays this message
   if (!userZipcodeValue) {
     alert("Please enter a zipcode.");
     return;
   }
 
+  //makes an axios call to get all of the data for the zipcode that was enter
   axios.get(`${API_URL}${API_PATH}?zip=${userZipcodeValue}&appid=${API_KEY}`)
     .then((response) => {
       let data = response.data;
+
+      //conversions for F and C temperatures 
       const tempC = (data.main.temp - 273.15).toFixed(1);
       const tempF = ((tempC * 9) / 5 + 32).toFixed(1);
 
       const feelsLikeC = (data.main.feels_like - 273.15).toFixed(1);
       const feelsLikeF = ((feelsLikeC * 9) / 5 + 32).toFixed(1);
 
+      //sets the local storage to the input zipcode value
       localStorage.setItem("zipcode", userZipcodeValue);
-
+      
+      //makes the weatherInfo div HTML equal to nothing
       weatherInfo.innerHTML = "";
 
+      //creates a var called weatherData equal to the HTML that is shown
+      //the ${} in the HTML inserts the data from the API to be displayed
       const weatherData = `
       <div class="row justify-content-center">
         <div class="border border-dark text-center col-8 yellow-back"><b>City</b></div>
@@ -103,9 +121,11 @@ function getWeatherData() {
       </div>
       `;
 
+      //sets the weatherInfo div HTML to be set as the weatherData var
       weatherInfo.innerHTML = weatherData;
     })
 
+    //if the zipcode entered is not an actual zipcode, it will display this message
     .catch((error) => {
       console.error(error);
       alert("There was an issue getting the weather data.\nPlease check the zipcode.")
