@@ -49,7 +49,7 @@ function getWeatherData() {
   }
 
   //makes an axios call to get all of the data for the zipcode that was enter
-  axios.get(`${API_URL}${API_PATH}?zip=${userZipcodeValue}&appid=${API_KEY}`)
+  axios.get(`http://api.openweathermap.org/data/2.5/weather?zip=${userZipcodeValue}&appid=${API_KEY}`)
     .then((response) => {
       let data = response.data;
 
