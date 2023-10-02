@@ -21,6 +21,15 @@ page.innerHTML = `
 //creates var that holds the input from the user zipcode
 let userZipcode = document.getElementById("userZipcode")
 
+//when the page loads, it checks if there is anything in local storage and then loads the information
+window.addEventListener("load", function() {
+  let storedZipcode = localStorage.getItem("zipcode");
+  if (storedZipcode) {
+    userZipcode.value = storedZipcode;
+    getWeatherData();
+  }
+})
+
 //adds an event listener to check if the user hits enter
 //if the user hits enter, it sends the user input to the the getWeatherData function 
 userZipcode.addEventListener("keypress", function(event) {
@@ -49,7 +58,7 @@ function getWeatherData() {
   }
 
   //makes an axios call to get all of the data for the zipcode that was enter
-  axios.get(`http://api.openweathermap.org/data/2.5/weather?zip=${userZipcodeValue}&appid=${API_KEY}`)
+  axios.get(`${API_URL}${API_PATH}?zip=${userZipcodeValue}&appid=${API_KEY}`)
     .then((response) => {
       let data = response.data;
 
@@ -59,6 +68,12 @@ function getWeatherData() {
 
       const feelsLikeC = (data.main.feels_like - 273.15).toFixed(1);
       const feelsLikeF = ((feelsLikeC * 9) / 5 + 32).toFixed(1);
+
+      //sets the local storage to the input zipcode value
+      localStorage.setItem("zipcode", userZipcodeValue);
+      
+      //makes the weatherInfo div HTML equal to nothing
+      weatherInfo.innerHTML = "";
 
       //creates a var called weatherData equal to the HTML that is shown
       //the ${} in the HTML inserts the data from the API to be displayed
